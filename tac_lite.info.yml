@@ -1,0 +1,7 @@
+name: Taxonomy Access Control Lite
+description: Simple access control based on categories.
+type: module
+core: 8.x
+package : Access control
+dependencies:
+  - taxonomy
