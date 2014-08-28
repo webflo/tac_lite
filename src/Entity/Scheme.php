@@ -9,7 +9,6 @@ namespace Drupal\tac_lite\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\Annotation\ConfigEntityType;
-
 /**
  * @ConfigEntityType(
  *   id = "tac_lite_scheme",
@@ -18,16 +17,24 @@ use Drupal\Core\Entity\Annotation\ConfigEntityType;
  *   config_prefix = "scheme",
  *   entity_keys = {
  *     "id" = "name",
- *     "label" = "label"
+ *     "label" = "label",
+ *     "weight" = "weight",
  *   },
  *   controllers = {
+ *     "list_builder" = "Drupal\tac_lite\SchemeListBuilder",
  *     "form" = {
  *       "add" = "Drupal\tac_lite\Form\SchemeFormController",
  *       "edit" = "Drupal\tac_lite\Form\SchemeFormController",
+ *       "delete" = "Drupal\tac_lite\Form\SchemeDeleteForm"
  *     }
+ *   },
+ *   links = {
+ *     "edit-form" = "tac_lite.scheme_edit",
+ *     "delete-form" = "tac_lite.scheme_delete"
  *   }
  * )
  */
+
 class Scheme extends ConfigEntityBase {
 
   public $name;

@@ -1,26 +1,41 @@
 tac_lite.settings:
-  path: 'admin/config/people/tac_lite'
+  path: '/admin/config/people/tac_lite'
   defaults:
     _form: 'Drupal\tac_lite\SettingsForm'
   requirements:
     _permission: 'administer tac_lite'
 
+tac_lite.scheme_list:
+  path: '/admin/config/people/tac_lite/list'
+  defaults:
+    _entity_list: 'tac_lite_scheme'
+    _title: 'Scheme'
+  requirements:
+    _permission: 'administer tac_lite'
+
 tac_lite.scheme_add:
-  path: 'admin/config/people/tac_lite/add'
+  path: '/admin/config/people/tac_lite/add'
   defaults:
     _entity_form: 'tac_lite_scheme.add'
   requirements:
     _permission: 'administer tac_lite'
 
 tac_lite.scheme_edit:
-  path: 'admin/config/people/tac_lite/manage/{tac_lite_scheme}'
+  path: '/admin/config/people/tac_lite/manage/{tac_lite_scheme}'
   defaults:
-    _form: 'tac_lite_scheme.edit'
+    _entity_form: 'tac_lite_scheme.edit'
+  requirements:
+    _permission: 'administer tac_lite'
+
+tac_lite.scheme_delete:
+  path: '/admin/config/people/tac_lite/manage/{tac_lite_scheme}/delete'
+  defaults:
+    _entity_form: 'tac_lite_scheme.delete'
   requirements:
     _permission: 'administer tac_lite'
 
 tac_lite.user:
-  path: 'user/{user}/edit/tac_lite'
+  path: '/user/{user}/edit/tac_lite'
   defaults:
     _form: 'Drupal\tac_lite\TaxonomyAccessUserForm'
   requirements:

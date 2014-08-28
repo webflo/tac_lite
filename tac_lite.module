@@ -682,7 +682,7 @@ function tac_lite_entity_type_alter(array &$entity_types) {
  * Respond to user deletion.
  */
 function tac_lite_user_delete($account) {
-  db_delete('tac_lite')->condition('uid',  $$account->id())->execute();
+  db_delete('tac_lite_user')->condition('uid', $account->id())->execute();
 }
 
 /**
@@ -690,8 +690,17 @@ function tac_lite_user_delete($account) {
  *
  * Respond to taxonomy term deletion.
  */
-function hook_taxonomy_term_delete(\Drupal\taxonomy\TermInterface $term) {
-  db_delete('tac_lite')->condition('tid',  $term->id())->execute();
+function tac_lite_taxonomy_term_delete(\Drupal\taxonomy\TermInterface $term) {
+  db_delete('tac_lite_user')->condition('tid', $term->id())->execute();
+}
+
+/**
+ * Implements hook_tac_lite_scheme_delete().
+ *
+ * Respond to tac lite scheme deletion.
+ */
+function tac_lite_tac_lite_scheme_delete(\Drupal\tac_lite\Entity\Scheme $scheme) {
+  db_delete('tac_lite_user')->condition('scheme', $scheme->id())->execute();
 }
 
 function tac_lite_load_schemes() {
