@@ -1,0 +1,5 @@
+tac_lite.user:
+  title: 'Access'
+  route_name: tac_lite.user
+  base_route: user.view
+  weigth: 10
