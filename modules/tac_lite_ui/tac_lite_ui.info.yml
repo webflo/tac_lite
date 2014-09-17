@@ -1,0 +1,7 @@
+name: TAC Lite UI
+type: module
+description: 'Custom user interface for tac lite.'
+version: VERSION
+core: 8.x
+dependencies:
+  - tac_lite

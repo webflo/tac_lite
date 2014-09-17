@@ -1,0 +1,4 @@
+tac_lite_ui.term_access:
+  title: 'Access'
+  route_name: tac_lite_ui.term_access
+  base_route: taxonomy.term_page
