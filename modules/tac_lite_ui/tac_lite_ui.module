@@ -10,20 +10,21 @@ function tac_lite_ui_entity_type_alter(&$entity_types) {
   $entity_types['taxonomy_term']->setLinkTemplate('tac-lite-access-form', 'tac_lite_ui.term_access');
 }
 
+/**
+ * Implements hook_form_alter().
+ *
+ * @param $form
+ * @param $form_state
+ */
 function tac_lite_ui_form_taxonomy_overview_terms_alter(&$form, &$form_state) {
   $term = !empty($form['#first_tid']) ? \Drupal\taxonomy\Entity\Term::load($form['#first_tid']) : FALSE;
   if ($term) {
     $vocabularies = \Drupal::config('tac_lite.settings')->get('vocabularies');
     if (!empty($vocabularies[$term->bundle()])) {
-      $destination = drupal_get_destination();
-
       foreach (\Drupal\Core\Render\Element::children($form['terms']) as $key) {
         $item = &$form['terms'][$key];
         $item['operations']['#links']['tac_lite_access'] = array(
           'title' => t('Access'),
-          'query' => array(
-            'destination' => $destination,
-          ),
         ) + $item['#term']->urlInfo('tac-lite-access-form')->toArray();
       }
     }
