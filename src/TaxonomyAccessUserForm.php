@@ -155,18 +155,11 @@ class TaxonomyAccessUserForm extends FormBase {
   }
 
   protected function grantPermission($scheme, $uid, $tid) {
-    return db_merge('tac_lite_user')
-      ->keys(array('scheme' => $scheme, 'uid' => $uid, 'tid' => $tid))
-      ->fields(array('scheme' => $scheme, 'uid' => $uid, 'tid' => $tid))
-      ->execute();
+    return Utility::grantPermission($scheme, $uid, $tid);
   }
 
   protected function revokePermission($scheme, $uid, $tid) {
-    return db_delete('tac_lite_user')
-      ->condition('scheme', $scheme)
-      ->condition('uid', $uid)
-      ->condition('tid', $tid)
-      ->execute();
+    return Utility::revokePermission($scheme, $uid, $tid);
   }
 
   public function getPermissions($account) {
