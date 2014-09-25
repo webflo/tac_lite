@@ -511,9 +511,11 @@ function tac_lite_node_get_terms($node) {
         foreach ($node->getTranslation($language->id)->$field_name as $item) {
           if (!$item->isEmpty()) {
             $term = $item->entity;
-            $tid = $term->id();
-            $bundle = $term->bundle();
-            $tids[$bundle][$tid] = $tid;
+            if ($term) {
+              $tid = $term->id();
+              $bundle = $term->bundle();
+              $tids[$bundle][$tid] = $tid;
+            }
           }
         }
       }
