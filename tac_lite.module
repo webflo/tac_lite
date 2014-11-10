@@ -51,50 +51,6 @@ function tac_lite_permission() {
 }
 
 /**
- * Implementation of hook_menu().
- */
-function tac_lite_menu() {
-  global $user;
-  $items = array();
-
-  $items['admin/config/people/tac_lite'] = array(
-    'title' => 'Access by Taxonomy',
-    'description' => "taxonomy-based permissions by tac_lite",
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('tac_lite_admin_settings'),
-    'weight' => 1, // after 'roles' tab
-    'access arguments' => array('administer tac_lite'),
-  );
-
-  $items['admin/config/people/tac_lite/settings'] = array(
-    'title' => 'Settings',
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-    'weight' => -1,
-    'access arguments' => array('administer tac_lite'),
-  );
-
-  $schemes = variable_get('tac_lite_schemes', 1);
-  for ($i = 1; $i <= $schemes; $i++) {
-    $scheme = variable_get('tac_lite_config_scheme_'. $i, FALSE);
-    if ($scheme) {
-      $title = $scheme['name'];
-    } else {
-      $title = "Scheme $i";
-    }
-    $items['admin/config/people/tac_lite/scheme_' . $i] = array(
-      'title' => $title,
-      'page callback' => 'tac_lite_admin_settings_scheme',
-      'page arguments' => array((string)$i),
-      'type' => MENU_LOCAL_TASK,
-      'weight' => $i,
-      'access arguments' => array('administer tac_lite'),
-    );
-  }
-
-  return $items;
-}
-
-/**
  * Returns the settings form
  */
 function tac_lite_admin_settings($form, &$form_state) {
