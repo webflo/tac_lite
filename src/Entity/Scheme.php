@@ -20,7 +20,7 @@ use Drupal\Core\Entity\Annotation\ConfigEntityType;
  *     "label" = "label",
  *     "weight" = "weight",
  *   },
- *   controllers = {
+ *   handlers = {
  *     "list_builder" = "Drupal\tac_lite\SchemeListBuilder",
  *     "form" = {
  *       "add" = "Drupal\tac_lite\Form\SchemeFormController",

@@ -8,8 +8,12 @@
 namespace Drupal\tac_lite;
 
 use Drupal\Core\Form\FormBase;
+use Drupal\Core\Form\FormState;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\taxonomy\Entity\Vocabulary;
+use Drupal\user\Entity\User;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TaxonomyAccessUserForm extends FormBase {
 
@@ -28,38 +32,34 @@ class TaxonomyAccessUserForm extends FormBase {
     return 'tac_lite_user';
   }
 
-  public function __construct($account) {
-    $this->account = $account;
+  public function __construct($uid) {
+    $this->account = User::load($uid);
+    if (!$this->account) {
+      throw new NotFoundHttpException();
+    }
   }
 
   public static function create(ContainerInterface $container) {
     /**
-     * @var \Symfony\Component\HttpFoundation\Request $request;
+     * @var \Drupal\Core\Routing\CurrentRouteMatch $route_match
      */
-    $request = $container->get('request');
+    $route_match = $container->get('current_route_match');
 
     return new static(
-      $request->attributes->get('user')
+      $route_match->getParameter('user')
     );
   }
 
   /**
-   * Form constructor.
-   *
    * @param array $form
-   *   An associative array containing the structure of the form.
-   * @param array $form_state
-   *   An associative array containing the current state of the form.
-   *
-   * @return array
-   *   The form structure.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
    */
-  public function buildForm(array $form, array &$form_state) {
+  public function buildForm(array $form, FormStateInterface $form_state) {
     $permissions = $this->getPermissions($this->account);
 
     $form['help'] = array(
       '#markup' => '<p>' . t('You may grant this user access based on the schemes and terms below. These permissions are in addition to <a href="!url">role based grants on scheme settings pages</a>.',
-          array('!url' => url('admin/config/people/tac_lite/scheme_1'))) . "</p>\n",
+          array('!url' => _url('admin/config/people/tac_lite/scheme_1'))) . "</p>\n",
     );
 
     $bundles = Vocabulary::loadMultiple($this->config('tac_lite.settings')->get('vocabularies'));
@@ -141,7 +141,7 @@ class TaxonomyAccessUserForm extends FormBase {
    * @param array $form_state
    *   An associative array containing the current state of the form.
    */
-  public function submitForm(array &$form, array &$form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     foreach ($form_state['values']['permissions'] as $scheme => $terms) {
       foreach ($terms as $tid => $value) {
         if (empty($value)) {

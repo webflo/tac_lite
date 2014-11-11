@@ -8,6 +8,8 @@
 namespace Drupal\tac_lite\Form;
 
 use Drupal\Core\Entity\EntityConfirmFormBase;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 
 class SchemeDeleteForm extends EntityConfirmFormBase {
 
@@ -28,10 +30,8 @@ class SchemeDeleteForm extends EntityConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function getCancelRoute() {
-    return array(
-      'route_name' => 'tac_lite.scheme_list',
-    );
+  public function getCancelUrl() {
+    return Url::fromRoute('tac_lite.scheme_list');
   }
 
   /**
@@ -44,11 +44,11 @@ class SchemeDeleteForm extends EntityConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function submit(array $form, array &$form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->entity->delete();
     drupal_set_message($this->t('Deleted scheme %name.', array('%name' => $this->entity->label())));
-    watchdog('tac_lite', 'Deleted scheme %name.', array('%name' => $this->entity->label()), WATCHDOG_NOTICE);
-    $form_state['redirect_route']['route_name'] = 'tac_lite.scheme_list';
+    $this->logger('tac_lite')->notice('Deleted scheme %name.', array('%name' => $this->entity->label()));
+    $form_state->setRedirect('tac_lite.scheme_list');
   }
 
 }

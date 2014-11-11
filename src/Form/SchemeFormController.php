@@ -7,12 +7,13 @@
 
 namespace Drupal\tac_lite\Form;
 
-use Drupal\Core\Entity\EntityFormController;
+use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Form\FormStateInterface;
 
-class SchemeFormController extends EntityFormController {
+class SchemeFormController extends EntityForm {
 
-  public function form(array $form, array &$form_state) {
+  public function form(array $form, FormStateInterface $form_state) {
     $form = parent::form($form, $form_state);
 
     $form['label'] = array(
@@ -67,7 +68,7 @@ class SchemeFormController extends EntityFormController {
     return $form;
   }
 
-  public function save(array $form, array &$form_state) {
+  public function save(array $form, FormStateInterface $form_state) {
     $this->entity->save();
   }
 

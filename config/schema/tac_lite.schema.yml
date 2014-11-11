@@ -1,0 +1,25 @@
+tac_lite.scheme.*:
+  type: config_entity
+  label: 'TAC Lite Access Scheme'
+  mapping:
+    name:
+      type: string
+      label: 'Machine-readable name'
+    label:
+      type: label
+      label: 'Name'
+    unpublished_content:
+      type: boolean
+      label: 'Unpublished content'
+    term_visibility:
+      type: boolean
+      label: 'Term visibility'
+    form_visibility:
+      type: boolean
+      label: 'Form visibility'
+    permissions:
+      type: mapping
+      label: 'Permissions'
+    weight:
+      type: integer
+      label: 'Weight'

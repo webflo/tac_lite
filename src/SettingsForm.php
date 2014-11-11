@@ -8,6 +8,7 @@
 namespace Drupal\tac_lite;
 
 use Drupal\Core\Form\ConfigFormBase;
+use Drupal\Core\Form\FormStateInterface;
 
 class SettingsForm extends ConfigFormBase {
 
@@ -21,7 +22,7 @@ class SettingsForm extends ConfigFormBase {
     return 'tact_lite_settings';
   }
 
-  public function buildForm(array $form, array &$form_state) {
+  public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->configFactory->get('tac_lite.settings');
 
     $vocabularies = array();
@@ -43,9 +44,9 @@ class SettingsForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, array &$form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->configFactory->get('tac_lite.settings')
-      ->set('vocabularies', array_filter($form_state['values']['vocabularies']))
+      ->set('vocabularies', array_filter($form_state->getValue('vocabularies')))
       ->save();
 
     parent::submitForm($form, $form_state);
