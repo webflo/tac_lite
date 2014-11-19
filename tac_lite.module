@@ -457,14 +457,14 @@ function _tac_lite_get_terms($node) {
  *
  * We organize our data structure by vid and tid.
  */
-function tac_lite_node_get_terms($node) {
+function tac_lite_node_get_terms(\Drupal\node\NodeInterface $node) {
   $tids = array();
 
   foreach ($node->getFieldDefinitions() as $field) {
     $field_name = $field->getName();
     if ($field->getType() == 'taxonomy_term_reference') {
       foreach ($node->getTranslationLanguages() as $language) {
-        foreach ($node->getTranslation($language->id)->$field_name as $item) {
+        foreach ($node->getTranslation($language->getId())->$field_name as $item) {
           if (!$item->isEmpty()) {
             $term = $item->entity;
             if ($term) {
