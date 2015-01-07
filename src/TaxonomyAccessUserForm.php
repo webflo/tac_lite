@@ -138,11 +138,11 @@ class TaxonomyAccessUserForm extends FormBase {
    *
    * @param array $form
    *   An associative array containing the structure of the form.
-   * @param array $form_state
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   An associative array containing the current state of the form.
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    foreach ($form_state['values']['permissions'] as $scheme => $terms) {
+    foreach ($form_state->getValue('permissions') as $scheme => $terms) {
       foreach ($terms as $tid => $value) {
         if (empty($value)) {
           $this->revokePermission($scheme, $this->account->id(), $tid);

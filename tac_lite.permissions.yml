@@ -1,0 +1,3 @@
+administer tac_lite:
+  title: 'Administer TAC Lite'
+  restrict access: true

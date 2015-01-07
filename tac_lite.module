@@ -39,18 +39,6 @@ $output .= '<p>' . t('There are several steps required to set up Taxonomy Access
 }
 
 /**
- * Implementation of hook_perm().
- */
-function tac_lite_permission() {
-  return array(
-    'administer tac_lite' => array(
-      'title' => t('administer tac_lite'),
-      'description' => t('TODO Add a description for \'administer tac_lite\''),
-    ),
-  );
-}
-
-/**
  * Returns the settings form
  */
 function tac_lite_admin_settings($form, &$form_state) {
