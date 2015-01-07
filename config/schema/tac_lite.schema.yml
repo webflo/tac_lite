@@ -1,3 +1,11 @@
+tac_lite.settings:
+  type: mapping
+  label: "TAC List Settings"
+  mapping:
+    vocabularies:
+      type: mapping
+      label: "Vocabularies"
+
 tac_lite.scheme.*:
   type: config_entity
   label: 'TAC Lite Access Scheme'
