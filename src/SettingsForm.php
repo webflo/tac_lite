@@ -13,13 +13,17 @@ use Drupal\Core\Form\FormStateInterface;
 class SettingsForm extends ConfigFormBase {
 
   /**
-   * Returns a unique string identifying the form.
-   *
-   * @return string
-   *   The unique string identifying the form.
+   * {@inheritdoc}
    */
   public function getFormId() {
     return 'tact_lite_settings';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function getEditableConfigNames() {
+    return array('tac_lite.settings');
   }
 
   public function buildForm(array $form, FormStateInterface $form_state) {

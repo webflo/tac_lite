@@ -7,7 +7,7 @@
  */
 function tac_lite_ui_entity_type_alter(&$entity_types) {
   $entity_types['taxonomy_term']->setFormClass('tac_lite', 'Drupal\tac_lite_ui\Form\TermAccessForm');
-  $entity_types['taxonomy_term']->setLinkTemplate('tac-lite-access-form', 'tac_lite_ui.term_access');
+  $entity_types['taxonomy_term']->setLinkTemplate('tac-lite-access-form', '/taxonomy/term/{taxonomy_term}/access');
 }
 
 /**
