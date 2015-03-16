@@ -29,12 +29,11 @@ use Drupal\Core\Entity\Annotation\ConfigEntityType;
  *     }
  *   },
  *   links = {
- *     "edit-form" = "tac_lite.scheme_edit",
- *     "delete-form" = "tac_lite.scheme_delete"
+ *     "edit-form" = "/admin/config/people/tac_lite/manage/{tac_lite_scheme}",
+ *     "delete-form" = "/admin/config/people/tac_lite/manage/{tac_lite_scheme}/delete"
  *   }
  * )
  */
-
 class Scheme extends ConfigEntityBase {
 
   public $name;
