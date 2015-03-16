@@ -1,4 +1,4 @@
-tac_lite_ui.term_access:
+entity.taxonomy_term.tac_lite_access_form:
   title: 'Access'
-  route_name: tac_lite_ui.term_access
+  route_name: entity.taxonomy_term.tac_lite_access_form
   base_route: taxonomy.term_page

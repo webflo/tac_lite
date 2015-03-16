@@ -1,4 +1,4 @@
-tac_lite_ui.term_access:
+entity.taxonomy_term.tac_lite_access_form:
   path: '/taxonomy/term/{taxonomy_term}/access'
   defaults:
     _entity_form: 'taxonomy_term.tac_lite'

@@ -7,16 +7,17 @@
 
 namespace Drupal\tac_lite_ui\Form;
 
-use Drupal\Core\Entity\ContentEntityFormController;
+use Drupal\Core\Entity\ContentEntityForm;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\tac_lite\Utility;
 use Drupal\user\Entity\User;
 
-class TermAccessForm extends ContentEntityFormController {
+class TermAccessForm extends ContentEntityForm {
 
   /**
    * {@inheritdoc}
    */
-  public function form(array $form, array &$form_state) {
+  public function form(array $form, FormStateInterface $form_state) {
     $permissions = $this->loadPermissions();
     $schemes = $this->loadSchemes();
 
@@ -75,18 +76,26 @@ class TermAccessForm extends ContentEntityFormController {
       );
     }
 
-    $form_state['confirm_delete'] = TRUE;
     return $form;
   }
 
-  protected function actionsElement(array $form, array &$form_state) {
+  /**
+   * {@inheritdoc}
+   */
+  protected function actionsElement(array $form, FormStateInterface $form_state) {
     $element = parent::actionsElement($form, $form_state);
     unset($element['delete']);
     return $element;
   }
 
-  public function submit(array $form, array &$form_state) {
-    $value = $form_state['values']['list']['new_user'];
+  /**
+   * {@inheritdoc}
+   */
+  public function submitForm(array &$form, FormStateInterface $form_state) {
+    parent::submitForm($form, $form_state);
+
+    $value = $form_state->getValue(['list', 'new_user']);
+
     if (!empty($value['username'])) {
       $account = user_load_by_name($value['username']);
       if ($account) {
@@ -95,8 +104,9 @@ class TermAccessForm extends ContentEntityFormController {
       }
     }
 
-    unset($form_state['values']['list']['new_user']);
-    foreach ($form_state['values']['list'] as $account => $schemes) {
+    $list = $form_state->getValue(['list']);
+    unset($list['new_user']);
+    foreach ($list as $account => $schemes) {
       $this->savePermissions($account, $schemes);
     }
   }
