@@ -49,7 +49,7 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $this->configFactory->get('tac_lite.settings')
+    $this->config('tac_lite.settings')
       ->set('vocabularies', array_filter($form_state->getValue('vocabularies')))
       ->save();
 
