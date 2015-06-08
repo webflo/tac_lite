@@ -1,0 +1,5 @@
+services:
+  tac_lite.access_handler:
+    tags:
+    class: Drupal\tac_lite\AccessHandler
+    arguments: ['@entity.manager']
