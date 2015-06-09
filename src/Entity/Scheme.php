@@ -58,4 +58,8 @@ class Scheme extends ConfigEntityBase {
     return 'tac_lite_scheme_' . $this->id();
   }
 
+  public function hasPermission($permission) {
+    return !empty($this->permissions[$permission]);
+  }
+
 }
