@@ -20,14 +20,14 @@ tac_lite.scheme_add:
   requirements:
     _permission: 'administer tac_lite'
 
-tac_lite.scheme_edit:
+entity.tac_lite_scheme.edit_form:
   path: '/admin/config/people/tac_lite/manage/{tac_lite_scheme}'
   defaults:
     _entity_form: 'tac_lite_scheme.edit'
   requirements:
     _permission: 'administer tac_lite'
 
-tac_lite.scheme_delete:
+entity.tac_lite_scheme.delete_form:
   path: '/admin/config/people/tac_lite/manage/{tac_lite_scheme}/delete'
   defaults:
     _entity_form: 'tac_lite_scheme.delete'
