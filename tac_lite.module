@@ -5,6 +5,9 @@
  *
  *
  */
+use Drupal\Core\Database\Query\SelectInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\tac_lite\Entity\Scheme;
 
 /**
  * Implementation of hook_help().
@@ -420,11 +423,15 @@ function _tac_lite_term_select($v, $default_values = array()) {
  *
  * Users are granted access to terms either because of who they are,
  * or because of the roles they have.
+ *
+ * @param AccountInterface $account
+ * @param \Drupal\tac_lite\Entity\Scheme $scheme
+ *
+ * @return
  */
-function _tac_lite_user_tids($account, $scheme) {
+function _tac_lite_user_tids(AccountInterface $account, Scheme $scheme) {
   $tids = db_query('SELECT tid FROM {tac_lite_user} WHERE uid = :uid AND scheme = :scheme', array(':uid' => $account->id(), ':scheme' => $scheme->id()))->fetchCol();
   return $tids;
-
 
   /*
   // grant id 0 is reserved for nodes which were not given a grant id when they were created. By adding 0 to the grant id, we let the user view those nodes.
@@ -467,7 +474,7 @@ function _tac_lite_user_tids($account, $scheme) {
  * Returns any grants which may give the user permission to perform the
  * requested op.
  */
-function tac_lite_node_grants(\Drupal\Core\Session\AccountInterface $account, $op) {
+function tac_lite_node_grants(AccountInterface $account, $op) {
   $grants = array();
   foreach (tac_lite_load_schemes() as $scheme) {
     if (!empty($scheme->permissions['grant_' . $op])) {
@@ -483,52 +490,67 @@ function tac_lite_node_grants(\Drupal\Core\Session\AccountInterface $account, $o
  * Acts on queries that list terms (generally these should be tagged with 'term_access')
  * to remove any terms that this user should not be able to see.
  */
-/*
-function tac_lite_query_term_access_alter(QueryAlterableInterface $query) {
-  global $user;
+function tac_lite_query_term_access_alter(Drupal\Core\Database\Query\AlterableInterface $query) {
+  if (!$account = $query->getMetaData('account')) {
+    $account = \Drupal::currentUser();
+  }
 
   // If this user has administer rights, don't filter
-  if (user_access('administer tac_lite')) {
+  if ($account->hasPermission('administer tac_lite')) {
     return;
   }
 
   // Get our vocabularies and schemes from variables. Return if we have none.
-  $vids = variable_get('tac_lite_categories', NULL);
-  $schemes = variable_get('tac_lite_schemes', 1);
+  $vids = \Drupal::config('tac_lite.settings')->get('vocabularies');
+  $schemes = \Drupal\tac_lite\Entity\Scheme::loadMultiple();
   if (!$vids || !count($vids) || !$schemes) {
     return;
   }
 
   // the terms this user is allowed to see
   $term_visibility = FALSE;
-  $tids = array();
-  for ($i = 1; $i <= $schemes; $i++) {
-    $config = _tac_lite_config($i);
-    if ($config['term_visibility']) {
-      $tids = array_merge($tids, _tac_lite_user_tids($user, $i));
+  $tids = array(-1);
+  foreach ($schemes as $scheme) {
+    if ($scheme->get('term_visibility')) {
+      $tids = array_merge($tids, _tac_lite_user_tids($account, $scheme));
       $term_visibility = TRUE;
     }
   }
 
   if ($term_visibility) {
-    // HELP: What is the proper way to find the alias of the primary table here?
-    $primary_table = '';
-    $t = $query->getTables();
-    foreach($t as $key => $info) {
-      if (!$info['join type']) {
-        $primary_table = $info['alias'];
+    $tables = $query->getTables();
+    $base_table = $query->getMetaData('base_table');
+    // If the base table is not given, default to node if present.
+    if (!$base_table) {
+      foreach ($tables as $table_info) {
+        if (!($table_info instanceof SelectInterface)) {
+          $table = $table_info['table'];
+          // If the {taxonomy_term_data} table is in the query, it wins immediately.
+          if ($table == 'taxonomy_term_data' || $table == 'taxonomy_term_field_data') {
+            $base_table = $table;
+            break;
+          }
+        }
+      }
+      // Bail out if the base table is missing.
+      if (!$base_table) {
+        throw new Exception(t('Query tagged for term access but there is no taxonomy_term_data table, specify the base_table using meta data.'));
+      }
+    }
+
+    foreach ($tables as $table_info) {
+      if ($table_info['table'] == $base_table) {
+        $alias = $table_info['alias'];
       }
     }
 
     // Prevent query from finding terms the current user does not have permission to see.
-    $query->leftJoin('taxonomy_term_data', 'tac_td', $primary_table . '.tid = tac_td.tid');
     $or = db_or();
-    $or->condition($primary_table . '.tid', $tids, 'IN');
-    $or->condition('tac_td.vid', $vids, 'NOT IN');
+    $or->condition($alias . '.tid', $tids, 'IN');
+    $or->condition($alias . '.vid', $vids, 'NOT IN');
     $query->condition($or);
   }
 }
-*/
 
 /**
  * Implements hook_entity_type_alter().
