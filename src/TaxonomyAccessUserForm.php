@@ -22,14 +22,7 @@ class TaxonomyAccessUserForm extends FormBase {
    */
   protected $account;
 
-  /**
-   * The database connection.
-   *
-   * @var \Drupal\Core\Database\Connection
-   */
-
-  //TODO make it accessible as protected from Drupal\Taxonomy\TermStorage $this->database
-  public $database;
+ 
 
   /**
    * Returns a unique string identifying the form.
@@ -41,20 +34,13 @@ class TaxonomyAccessUserForm extends FormBase {
     return 'tac_lite_user';
   }
 
-  /**
-   * @return Connection
-   */
-  public function getDatabase()
-  {
-    return $this->database;
-  }
 
-  public function __construct($uid, $database) {
+
+  public function __construct($uid) {
     $this->account = User::load($uid);
     if (!$this->account) {
       throw new NotFoundHttpException();
     }
-    $this->database = $database;
   }
 
   public static function create(ContainerInterface $container) {
@@ -96,7 +82,7 @@ class TaxonomyAccessUserForm extends FormBase {
     }
 
     foreach ($bundles as $bundle) {
-      foreach (TermStorage::loadTree($bundle->id()) as $term) {
+      foreach (\Drupal::entityManager()->getStorage('taxonomy_term')->loadTree($bundle->id()) as $term) {
         $form['permissions'][$term->tid][] = array(
           '#markup' => $term->name
         );
