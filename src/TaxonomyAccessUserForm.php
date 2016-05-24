@@ -13,6 +13,7 @@ use Drupal\taxonomy\Entity\Vocabulary;
 use Drupal\user\Entity\User;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Drupal\taxonomy\TermStorage;
 
 class TaxonomyAccessUserForm extends FormBase {
 
@@ -20,6 +21,15 @@ class TaxonomyAccessUserForm extends FormBase {
    * @var \Drupal\user\Entity\User
    */
   protected $account;
+
+  /**
+   * The database connection.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
+
+  //TODO make it accessible as protected from Drupal\Taxonomy\TermStorage $this->database
+  public $database;
 
   /**
    * Returns a unique string identifying the form.
@@ -31,11 +41,20 @@ class TaxonomyAccessUserForm extends FormBase {
     return 'tac_lite_user';
   }
 
-  public function __construct($uid) {
+  /**
+   * @return Connection
+   */
+  public function getDatabase()
+  {
+    return $this->database;
+  }
+
+  public function __construct($uid, $database) {
     $this->account = User::load($uid);
     if (!$this->account) {
       throw new NotFoundHttpException();
     }
+    $this->database = $database;
   }
 
   public static function create(ContainerInterface $container) {
@@ -45,7 +64,8 @@ class TaxonomyAccessUserForm extends FormBase {
     $route_match = $container->get('current_route_match');
 
     return new static(
-      $route_match->getParameter('user')
+      $route_match->getParameter('user'),
+      $container->get('database')
     );
   }
 
@@ -58,7 +78,7 @@ class TaxonomyAccessUserForm extends FormBase {
 
     $form['help'] = array(
       '#markup' => '<p>' . t('You may grant this user access based on the schemes and terms below. These permissions are in addition to <a href="!url">role based grants on scheme settings pages</a>.',
-          array('!url' => _url('admin/config/people/tac_lite/scheme_1'))) . "</p>\n",
+          array('!url' => 'admin/config/people/tac_lite/scheme_1')) . "</p>\n",
     );
 
     $bundles = Vocabulary::loadMultiple($this->config('tac_lite.settings')->get('vocabularies'));
@@ -76,7 +96,7 @@ class TaxonomyAccessUserForm extends FormBase {
     }
 
     foreach ($bundles as $bundle) {
-      foreach (taxonomy_get_tree($bundle->id()) as $term) {
+      foreach (TermStorage::loadTree($bundle->id()) as $term) {
         $form['permissions'][$term->tid][] = array(
           '#markup' => $term->name
         );
