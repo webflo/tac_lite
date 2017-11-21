@@ -9,6 +9,7 @@ namespace Drupal\tac_lite;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 use Drupal\taxonomy\Entity\Vocabulary;
 use Drupal\user\Entity\User;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -57,8 +58,8 @@ class TaxonomyAccessUserForm extends FormBase {
     $permissions = $this->getPermissions($this->account);
 
     $form['help'] = array(
-      '#markup' => '<p>' . t('You may grant this user access based on the schemes and terms below. These permissions are in addition to <a href="!url">role based grants on scheme settings pages</a>.',
-          array('!url' => _url('admin/config/people/tac_lite/scheme_1'))) . "</p>\n",
+      '#markup' => '<p>' . t('You may grant this user access based on the schemes and terms below. These permissions are in addition to <a href=":url">role based grants on scheme settings pages</a>.',
+          array(':url' => Url::fromUri('internal:/admin/config/people/tac_lite/scheme_1')->toString())) . "</p>\n",
     );
 
     $bundles = Vocabulary::loadMultiple($this->config('tac_lite.settings')->get('vocabularies'));
@@ -76,7 +77,7 @@ class TaxonomyAccessUserForm extends FormBase {
     }
 
     foreach ($bundles as $bundle) {
-      foreach (taxonomy_get_tree($bundle->id()) as $term) {
+      foreach (\Drupal::entityManager()->getStorage('taxonomy_term')->loadTree($bundle->id()) as $term) {
         $form['permissions'][$term->tid][] = array(
           '#markup' => $term->name
         );
